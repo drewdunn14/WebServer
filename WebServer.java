@@ -16,7 +16,7 @@ public class WebServer {
         root.setHandler(WebServer::handleRequest);
 
         HttpContext context = server.createContext("/users");
-        context.setHandler(WebServer::handleRequestUser);
+        context.setHandler(WebServer::handleRequestAllUsers);
 
         HttpContext product = server.createContext("/products");
         product.setHandler(WebServer::handleRequestOneProduct);
@@ -56,7 +56,7 @@ public class WebServer {
         os.close();
     }
 
-    private static void handleRequestUser(HttpExchange exchange) throws IOException {
+    private static void handleRequestAllUsers(HttpExchange exchange) throws IOException {
         String response = "Hi there! I am a simple web server!";
         exchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = exchange.getResponseBody();
@@ -65,7 +65,6 @@ public class WebServer {
     }
 
     private static void handleRequestAllProducts(HttpExchange exchange) throws IOException {
-//        String response =  "This simple web server is designed with help from ChatGPT!";
 
         String url = "jdbc:sqlite:store.db";
 
@@ -81,7 +80,7 @@ public class WebServer {
         html.appendChild( head );
 
         Title title = new Title();
-        title.appendChild( new Text("Example Page Title") );
+        title.appendChild( new Text("Product List") );
         head.appendChild( title );
 
         Body body = new Body();
@@ -89,7 +88,7 @@ public class WebServer {
         html.appendChild( body );
 
         H1 h1 = new H1();
-        h1.appendChild( new Text("Example Page Header") );
+        h1.appendChild( new Text("Product List") );
         body.appendChild( h1 );
 
         P para = new P();
@@ -110,7 +109,13 @@ public class WebServer {
 
         for (ProductModel product : list) {
             row = new Tr();
-            Td cell = new Td(); cell.appendText(String.valueOf(product.productID)); row.appendChild(cell);
+            Td cell = new Td();
+            //create link on each productID mapped to "/products/<ProductID>"
+            A link = new A("/products/" + product.productID);
+            link.appendText(String.valueOf(product.productID));
+            cell.appendChild(link);
+            row.appendChild(cell);
+
             cell = new Td(); cell.appendText(product.name); row.appendChild(cell);
             cell = new Td(); cell.appendText(String.valueOf(product.price)); row.appendChild(cell);
             cell = new Td(); cell.appendText(String.valueOf(product.quantity)); row.appendChild(cell);
@@ -152,7 +157,7 @@ public class WebServer {
         html.appendChild( head );
 
         Title title = new Title();
-        title.appendChild( new Text("Example Page Title") );
+        title.appendChild( new Text("Product Details"));
         head.appendChild( title );
 
         Body body = new Body();
@@ -160,7 +165,7 @@ public class WebServer {
         html.appendChild( body );
 
         H1 h1 = new H1();
-        h1.appendChild( new Text("Example Page Header") );
+        h1.appendChild( new Text("Product Details"));
         body.appendChild( h1 );
 
         P para = new P();
@@ -171,18 +176,23 @@ public class WebServer {
 
         if (product != null) {
 
-            para = new P();
-            para.appendText("ProductID:" + product.productID);
-            html.appendChild(para);
-            para = new P();
-            para.appendText("Product name:" + product.name);
-            html.appendChild(para);
-            para = new P();
-            para.appendText("Price:" + product.price);
-            html.appendChild(para);
-            para = new P();
-            para.appendText("Quantity:" + product.quantity);
-            html.appendChild(para);
+            Table table = new Table();
+            Tr row = new Tr();
+            Th header = new Th(); header.appendText("ProductID"); row.appendChild(header);
+            header = new Th(); header.appendText("Product name"); row.appendChild(header);
+            header = new Th(); header.appendText("Price"); row.appendChild(header);
+            header = new Th(); header.appendText("Quantity"); row.appendChild(header);
+            table.appendChild(row);
+
+
+            row = new Tr();
+            Td cell = new Td(); cell.appendText(String.valueOf(product.productID)); row.appendChild(cell);
+            cell = new Td(); cell.appendText(product.name); row.appendChild(cell);
+            cell = new Td(); cell.appendText(String.valueOf(product.price)); row.appendChild(cell);
+            cell = new Td(); cell.appendText(String.valueOf(product.quantity)); row.appendChild(cell);
+            table.appendChild(row);
+            table.setBorder("1");
+            html.appendChild(table);
         }
         else {
             para = new P();
