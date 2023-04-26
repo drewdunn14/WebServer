@@ -105,4 +105,51 @@ public class SQLiteDataAdapter implements DataAccess {
     }
 
 
+    public User loadUser(String username) {
+        User user = null;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM User WHERE userName = " + username);
+            while (rs.next()) {
+                user = new User();
+                user.userID = rs.getInt(1);
+                user.userName = rs.getString(2);
+                user.password = rs.getString(3);
+                user.displayName = rs.getString(4);
+                user.isManager = rs.getBoolean(5);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return user;
+    }
+
+
+    public List<User> loadAllUsers() {
+        List<User> list = new ArrayList<>();
+        User user = null;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM User ");
+            while (rs.next()) {
+                user = new User();
+                user.userID = rs.getInt(1);
+                user.userName = rs.getString(2);
+                user.password = rs.getString(3);
+                user.displayName = rs.getString(4);
+                user.isManager = rs.getBoolean(5);
+                list.add(user);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+
+
+
+
+
 }

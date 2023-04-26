@@ -57,11 +57,81 @@ public class WebServer {
     }
 
     private static void handleRequestAllUsers(HttpExchange exchange) throws IOException {
-        String response = "Hi there! I am a simple web server!";
+
+        String url = "jdbc:sqlite:store.db";
+
+        SQLiteDataAdapter dao = new SQLiteDataAdapter();
+
+        dao.connect(url);
+
+        List<User> list = dao.loadAllUsers();
+
+        Html html = new Html();
+        Head head = new Head();
+
+        html.appendChild( head );
+
+        Title title = new Title();
+        title.appendChild( new Text("User List") );
+        head.appendChild( title );
+
+        Body body = new Body();
+
+        html.appendChild( body );
+
+        H1 h1 = new H1();
+        h1.appendChild( new Text("User List") );
+        body.appendChild( h1 );
+
+        P para = new P();
+        para.appendChild( new Text("The server time is " + LocalDateTime.now()) );
+        body.appendChild(para);
+
+        para = new P();
+        para.appendChild( new Text("The server has " + list.size() + " users." ));
+        body.appendChild(para);
+
+        Table table = new Table();
+        Tr row = new Tr();
+        Th header = new Th(); header.appendText("userID"); row.appendChild(header);
+        header = new Th(); header.appendText("Username"); row.appendChild(header);
+        header = new Th(); header.appendText("Password"); row.appendChild(header);
+        header = new Th(); header.appendText("Display Name"); row.appendChild(header);
+        header = new Th(); header.appendText("isManager"); row.appendChild(header);
+        table.appendChild(row);
+
+        for (User user : list) {
+            row = new Tr();
+            Td cell = new Td(); cell.appendText(String.valueOf(user.userID)); row.appendChild(cell);
+            //create link on each productID mapped to "/products/<ProductID>"
+            cell = new Td();
+            A link = new A("/users/" + user.userName);
+            link.appendText(String.valueOf(user.userName));
+            cell.appendChild(link);
+            row.appendChild(cell);
+
+            cell = new Td(); cell.appendText(user.password); row.appendChild(cell);
+            cell = new Td(); cell.appendText(user.displayName); row.appendChild(cell);
+            cell = new Td(); cell.appendText(String.valueOf(user.isManager)); row.appendChild(cell);
+            table.appendChild(row);
+        }
+
+        table.setBorder("1");
+
+        html.appendChild(table);
+        String response = html.write();
+
+        System.out.println(response);
+
+
         exchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+
+
+
+
     }
 
     private static void handleRequestAllProducts(HttpExchange exchange) throws IOException {
