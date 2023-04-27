@@ -25,10 +25,8 @@ public class Order {
         return date;
     }
 
-    public void setDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        this.date = dtf.format(now);
+    public void setDate(String dateIn) {
+        this.date = dateIn;
     }
 
     public double getTotalCost() {

@@ -108,8 +108,9 @@ public class SQLiteDataAdapter implements DataAccess {
     public User loadUser(String username) {
         User user = null;
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM User WHERE userName = " + username);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User WHERE UserName = ?");
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 user = new User();
                 user.userID = rs.getInt(1);
@@ -148,8 +149,47 @@ public class SQLiteDataAdapter implements DataAccess {
     }
 
 
+    public Order loadOrder(int orderID) {
+        Order order = null;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Orders WHERE OrderID = " + orderID);
+            if (rs.next()) {
+                order = new Order();
+                order.setOrderID(rs.getInt(1));
+                order.setDate(rs.getString(2));
+                order.setCustomerName(rs.getString(3));
+                order.setTotalCost(rs.getDouble(4));
+                order.setTotalTax(rs.getDouble(5));
+            }
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return order;
+    }
 
+    public List<Order> loadAllOrders() {
+        List<Order> list = new ArrayList<>();
+        Order order = null;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Orders ");
+            while (rs.next()) {
+                order = new Order();
+                order.setOrderID(rs.getInt(1));
+                order.setDate(rs.getString(2));
+                order.setCustomerName(rs.getString(3));
+                order.setTotalCost(rs.getDouble(4));
+                order.setTotalTax(rs.getDouble(5));
+                list.add(order);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
 
 
 }

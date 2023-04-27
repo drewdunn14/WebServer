@@ -6,3 +6,4 @@ public class User {
     public boolean isManager;
 
 }
+
