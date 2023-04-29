@@ -3,11 +3,9 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.Socket;
-import java.util.ArrayList;
 
-public class TestClient {
+public class ProductInfoServiceTestClient {
 
 
     public static void main(String[] args) throws IOException {
