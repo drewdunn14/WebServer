@@ -48,8 +48,11 @@ public class TestClient {
 
         ServiceInfoModel info = gson.fromJson(res.data, ServiceInfoModel.class);
 
-        
-        System.out.println("Info response from server: " + info.serviceCode + "\t" + info.serviceHostAddress + "\t" + info.serviceHostPort);
+
+        System.out.println("\n---------------------------");
+        System.out.println("- Microservice Discovered -");
+        System.out.println(info.toString());
+        System.out.println("---------------------------\n");
 
         Socket microserviceSocket = new Socket(info.serviceHostAddress, info.serviceHostPort);
 
@@ -63,7 +66,12 @@ public class TestClient {
 
         String micromsg = microserviceReader.readUTF();
 
-        System.out.println(micromsg);
+        ProductModel productModel = gson.fromJson(micromsg, ProductModel.class);
+
+        System.out.println("---------------------------");
+        System.out.println("---- Product Retrieved ----");
+        System.out.println(productModel.toString());
+        System.out.println("---------------------------");
 
         microservicePrinter.close();
         microserviceReader.close();
