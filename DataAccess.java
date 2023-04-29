@@ -8,4 +8,6 @@ public interface DataAccess {
     ProductModel loadProduct(int productID);
 
     List<ProductModel> loadAllProducts();
+
+    Order loadOrder(int orderID);
 }

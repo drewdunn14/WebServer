@@ -83,6 +83,17 @@ public class Order {
         return result;
     }
 
+    public String summary() {
+        String result = " OrderID: " + this.orderID
+                + "\n    Date: " +  this.date
+                + "\nCustomer: " + this.customerName
+                + "\n    Cost: " + this.totalCost
+                + "\n     Tax: " + this.totalTax;
+
+        return result;
+
+    }
+
 
 
 }
