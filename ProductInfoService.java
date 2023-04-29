@@ -51,15 +51,16 @@ public class ProductInfoService {
 
         DataInputStream reader = new DataInputStream(socket.getInputStream());
 
-        //String msg = reader.readUTF();
+        String msg = reader.readUTF();
 
-        int id = reader.readInt();
+        int id = Integer.parseInt(msg);
 
         System.out.println("ProductID from client " + clientID + ": " + id);
         Class.forName("org.sqlite.JDBC");
         DataAccess adapter = new SQLiteDataAdapter();
         adapter.connect("jdbc:sqlite:store.db");
         ProductModel model = adapter.loadProduct(id);
+        System.out.println(model.name);
         Gson gson = new Gson();
         String ans = gson.toJson(model);
         DataOutputStream printer = new DataOutputStream(socket.getOutputStream());

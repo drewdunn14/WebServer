@@ -49,6 +49,29 @@ public class TestClient {
         ServiceInfoModel info = gson.fromJson(res.data, ServiceInfoModel.class);
 
         
-        System.out.println(info);
+        System.out.println("Info response from server: " + info.serviceCode + "\t" + info.serviceHostAddress + "\t" + info.serviceHostPort);
+
+        Socket microserviceSocket = new Socket(info.serviceHostAddress, info.serviceHostPort);
+
+        DataOutputStream microservicePrinter = new DataOutputStream(microserviceSocket.getOutputStream());
+
+        microservicePrinter.writeUTF("2");
+
+        microservicePrinter.flush();
+
+        DataInputStream microserviceReader = new DataInputStream(microserviceSocket.getInputStream());
+
+        String micromsg = microserviceReader.readUTF();
+
+        System.out.println(micromsg);
+
+        microservicePrinter.close();
+        microserviceReader.close();
+        microserviceSocket.close();
+
+
+
+
+
     }
 }
