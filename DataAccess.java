@@ -10,4 +10,6 @@ public interface DataAccess {
     List<ProductModel> loadAllProducts();
 
     Order loadOrder(int orderID);
+
+    User authenticateUser(User user);
 }
