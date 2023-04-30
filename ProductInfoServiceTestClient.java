@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ProductInfoServiceTestClient {
 
@@ -56,7 +57,11 @@ public class ProductInfoServiceTestClient {
 
         DataOutputStream microservicePrinter = new DataOutputStream(microserviceSocket.getOutputStream());
 
-        microservicePrinter.writeUTF("2");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter ProductID: ");
+        String enteredID = scanner.nextLine().trim();
+
+        microservicePrinter.writeUTF(enteredID);
 
         microservicePrinter.flush();
 
@@ -66,10 +71,15 @@ public class ProductInfoServiceTestClient {
 
         ProductModel productModel = gson.fromJson(micromsg, ProductModel.class);
 
-        System.out.println("---------------------------");
-        System.out.println("---- Product Retrieved ----");
-        System.out.println(productModel.toString());
-        System.out.println("---------------------------");
+        if (productModel != null) {
+
+            System.out.println("\n---------------------------");
+            System.out.println("---- Product Retrieved ----");
+            System.out.println(productModel.toString());
+            System.out.println("---------------------------");
+        } else {
+            System.out.println("\nThe productID you entered could not be found!");
+        }
 
         microservicePrinter.close();
         microserviceReader.close();

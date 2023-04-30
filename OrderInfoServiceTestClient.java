@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class OrderInfoServiceTestClient {
 
@@ -56,7 +57,11 @@ public class OrderInfoServiceTestClient {
 
         DataOutputStream microservicePrinter = new DataOutputStream(microserviceSocket.getOutputStream());
 
-        microservicePrinter.writeUTF("1");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter OrderID: ");
+        String enteredID = scanner.nextLine().trim();
+
+        microservicePrinter.writeUTF(enteredID);
 
         microservicePrinter.flush();
 
@@ -66,10 +71,15 @@ public class OrderInfoServiceTestClient {
 
         Order order = gson.fromJson(micromsg, Order.class);
 
-        System.out.println("---------------------------");
-        System.out.println("----- Order Retrieved -----");
-        System.out.println(order.summary());
-        System.out.println("---------------------------");
+        if (order != null) {
+
+            System.out.println("\n---------------------------");
+            System.out.println("----- Order Retrieved -----");
+            System.out.println(order.summary());
+            System.out.println("---------------------------");
+        } else {
+            System.out.println("\nThe OrderID you entered cannot be found!");
+        }
 
         microservicePrinter.close();
         microserviceReader.close();

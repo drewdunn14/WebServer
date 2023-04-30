@@ -60,7 +60,12 @@ public class ProductInfoService {
         DataAccess adapter = new SQLiteDataAdapter();
         adapter.connect("jdbc:sqlite:store.db");
         ProductModel model = adapter.loadProduct(id);
-        System.out.println(model.name);
+        if (model != null) {
+            System.out.println(model.name);
+        } else {
+            System.out.println("ProductID cannot be found!");
+        }
+
         Gson gson = new Gson();
         String ans = gson.toJson(model);
         DataOutputStream printer = new DataOutputStream(socket.getOutputStream());

@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class UserAuthenticationServiceTestClient {
 
@@ -58,8 +59,11 @@ public class UserAuthenticationServiceTestClient {
 
         User user = new User();
 
-        user.userName = "drew";
-        user.password = "pwd";
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Username: ");
+        user.userName = scanner.nextLine().trim();
+        System.out.print("Enter Password: ");
+        user.password = scanner.nextLine().trim();
 
         String userObj = gson.toJson(user);
 
@@ -76,11 +80,13 @@ public class UserAuthenticationServiceTestClient {
 
         if (retrievedUser != null) {
 
-            System.out.println("---------------------------");
+            System.out.println("\n---------------------------");
             System.out.println("---- User Authenticated ---");
             System.out.println(retrievedUser.toString());
             System.out.println("---------------------------");
 
+        } else {
+            System.out.println("\nThe username/password you entered cannot be found!");
         }
 
         microservicePrinter.close();

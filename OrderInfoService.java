@@ -60,7 +60,12 @@ public class OrderInfoService {
         DataAccess adapter = new SQLiteDataAdapter();
         adapter.connect("jdbc:sqlite:store.db");
         Order order = adapter.loadOrder(id);
-        System.out.println(order.getDate());
+        if (order != null) {
+            System.out.println(order.getDate());
+        } else {
+            System.out.println("The orderID you entered cannot be found.");
+        }
+
         Gson gson = new Gson();
         String ans = gson.toJson(order);
         DataOutputStream printer = new DataOutputStream(socket.getOutputStream());
