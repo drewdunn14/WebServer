@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class UserAuthenticationService {
+public class ProductQuantityUpdateService {
 
     public static void main(String[] args) throws Exception {
 
         // server is listening on port 5050
 
-        int port = 5054;
+        int port = 5053;
 
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
@@ -23,7 +23,7 @@ public class UserAuthenticationService {
         // running infinite loop for getting
         // client request
 
-        System.out.println("Starting UserAuthentication service at port = " + port);
+        System.out.println("Starting ProductQuantityUpdate service at port = " + port);
 
         boolean result = register("localhost", 5000, "localhost", port); // Register with the Registry, so the client know how to find!
 
@@ -53,24 +53,37 @@ public class UserAuthenticationService {
 
         String msg = reader.readUTF();
 
-        Gson gson = new Gson();
+        int id = Integer.parseInt(msg);
 
-        User user = gson.fromJson(msg, User.class);
-
-        //System.out.println("OrderID from client " + clientID + ": " + id);
+        System.out.println("ProductID from client " + clientID + ": " + id);
         Class.forName("org.sqlite.JDBC");
         DataAccess adapter = new SQLiteDataAdapter();
         adapter.connect("jdbc:sqlite:store.db");
-        User retrievedUser = adapter.authenticateUser(user);
-        if (retrievedUser != null) {
-            System.out.println("\'" + retrievedUser.userName + "\'" + " has been authenticated!");
+        ProductModel model = adapter.loadProduct(id);
+        if (model != null) {
+            System.out.println(model.name);
         } else {
-            System.out.println("The requested user does not appear in the database.");
+            System.out.println("ProductID cannot be found!");
         }
-        String ans = gson.toJson(retrievedUser);
+
+        Gson gson = new Gson();
+        String ans = gson.toJson(model);
         DataOutputStream printer = new DataOutputStream(socket.getOutputStream());
         printer.writeUTF(ans);
         printer.flush();
+
+        String updatedMsg = reader.readUTF();
+        ProductModel updatedModel = gson.fromJson(updatedMsg, ProductModel.class);
+
+        adapter.saveProduct(updatedModel);
+
+        updatedMsg = gson.toJson(updatedModel);
+        printer.writeUTF(updatedMsg);
+        printer.flush();
+
+
+
+
         printer.close();
         reader.close();
         socket.close();
@@ -81,7 +94,7 @@ public class UserAuthenticationService {
     private static boolean register(String regHost, int regPort, String myHost, int myPort) throws IOException {
 
         ServiceInfoModel info = new ServiceInfoModel();
-        info.serviceCode = ServiceInfoModel.USER_AUTHENTICATION_SERVICE;
+        info.serviceCode = ServiceInfoModel.PRODUCT_QUANTITY_UPDATE_SERVICE;
         info.serviceHostAddress = myHost;
         info.serviceHostPort = myPort;
 
@@ -116,6 +129,4 @@ public class UserAuthenticationService {
     private static void deregister() {
 
     }
-
-
 }

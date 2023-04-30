@@ -46,6 +46,7 @@ public class SQLiteDataAdapter implements DataAccess {
                         + product.price + ","
                         + product.quantity + ")"
                 );
+                stmt.close();
             }
             else {
                 stmt.executeUpdate("UPDATE Product SET "
@@ -55,7 +56,7 @@ public class SQLiteDataAdapter implements DataAccess {
                         + "quantity = " + product.quantity +
                         " WHERE productID = " + product.productID
                 );
-
+                stmt.close();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -74,6 +75,8 @@ public class SQLiteDataAdapter implements DataAccess {
                 product.name = rs.getString(2);
                 product.price = rs.getDouble(3);
                 product.quantity = rs.getDouble(4);
+                rs.close();
+                stmt.close();
             }
 
         } catch (Exception ex) {
