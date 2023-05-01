@@ -121,6 +121,8 @@ public class SQLiteDataAdapter implements DataAccess {
                 user.password = rs.getString(3);
                 user.displayName = rs.getString(4);
                 user.isManager = rs.getBoolean(5);
+                rs.close();
+                stmt.close();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -152,6 +154,21 @@ public class SQLiteDataAdapter implements DataAccess {
     }
 
     @Override
+    public void cancelOrder(Order order) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM Orders WHERE OrderID = ? AND Customer = ?");
+            statement.setInt(1, order.getOrderID());
+            statement.setString(2, order.getCustomerName());
+            statement.executeUpdate();
+            statement.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+
+    @Override
     public User authenticateUser(User user) {
         User registeredUser = new User();
         try {
@@ -177,7 +194,7 @@ public class SQLiteDataAdapter implements DataAccess {
         return null;
     }
 
-
+    @Override
     public Order loadOrder(int orderID) {
         Order order = null;
         try {
@@ -190,8 +207,11 @@ public class SQLiteDataAdapter implements DataAccess {
                 order.setCustomerName(rs.getString(3));
                 order.setTotalCost(rs.getDouble(4));
                 order.setTotalTax(rs.getDouble(5));
+                rs.close();
+                stmt.close();
             }
-
+            rs.close();
+            stmt.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -219,6 +239,8 @@ public class SQLiteDataAdapter implements DataAccess {
         }
         return list;
     }
+
+
 
 
 }

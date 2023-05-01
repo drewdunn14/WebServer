@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class UserAuthenticationServiceTestClient {
+public class OrderCancellationServiceTestClient {
 
     public static void main(String[] args) throws IOException {
 
@@ -16,7 +16,7 @@ public class UserAuthenticationServiceTestClient {
 
         ServiceMessageModel req = new ServiceMessageModel();
         req.code = ServiceMessageModel.SERVICE_DISCOVER_REQUEST;
-        req.data = String.valueOf(ServiceInfoModel.USER_AUTHENTICATION_SERVICE);
+        req.data = String.valueOf(ServiceInfoModel.ORDER_CANCELLATION_SERVICE);
 
         Gson gson = new Gson();
 
@@ -85,6 +85,19 @@ public class UserAuthenticationServiceTestClient {
             System.out.println(retrievedUser.toString());
             System.out.println("---------------------------");
 
+            System.out.print("\nEnter OrderID to request cancellation: ");
+            int cancelOrderID = Integer.parseInt(scanner.nextLine().trim());
+            Order order =  new Order();
+            order.setOrderID(cancelOrderID);
+            String orderString = gson.toJson(order);
+            microservicePrinter.writeUTF(orderString);
+            microservicePrinter.flush();
+
+            String cancelledOrderString = microserviceReader.readUTF();
+            Order cancelledOrder = gson.fromJson(cancelledOrderString, Order.class);
+            System.out.println("\nOrderID #" + cancelledOrder.getOrderID() + " cancelled by " + retrievedUser.userName + ".");
+
+
         } else {
             System.out.println("\nThe username/password you entered cannot be found!");
         }
@@ -98,4 +111,7 @@ public class UserAuthenticationServiceTestClient {
 
 
     }
+
+
+
 }

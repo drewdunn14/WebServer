@@ -12,4 +12,6 @@ public interface DataAccess {
     Order loadOrder(int orderID);
 
     User authenticateUser(User user);
+
+    void cancelOrder(Order order);
 }
