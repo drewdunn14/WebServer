@@ -10,8 +10,6 @@ public class ProductPriceUpdateService {
 
     public static void main(String[] args) throws Exception {
 
-        // server is listening on port 5050
-
         int port = 5052;
 
         if (args.length > 0) {
